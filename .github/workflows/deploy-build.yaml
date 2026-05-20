@@ -1,4 +1,4 @@
-name: Deploy Book Preview
+name: Deploy Book
 
 on:
   workflow_run:
