@@ -23,7 +23,8 @@ dependencies:
   - icechunk
   - matplotlib
   - numpy
-  - wradlib>=2.9.4
+  - wradlib>=2.9.5
+  - xhistogram
   # - pydda
   - zarr
   - xarray
@@ -42,6 +43,9 @@ dependencies:
   # needed for s3 and filesystem
   - fsspec
   - s3fs
+  # needed for tabular (parquet) data access
+  - pyarrow
+  - openpyxl
   # this is needed for baltrad compilation
   - compilers
   - make

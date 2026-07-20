@@ -48,6 +48,7 @@ project:
     pyproj: https://pyproj4.github.io/pyproj/stable/
     wradlib: https://docs.wradlib.org/en/latest/
     scipy: https://docs.scipy.org/doc/scipy/
+    xarray: https://docs.xarray.dev/en/stable/
   toc:
     - file: README.md
     - file: notebooks/how_to_cite.md
@@ -60,6 +61,7 @@ project:
     - title: Data Access
       children:
         - file: notebooks/data-access/intro-data-access.md
+        - file: notebooks/data-access/station-data-access.md
         - file: notebooks/xradar/xradar-basics.md
     - title: Radar Software Foundations
       children:
@@ -74,16 +76,30 @@ project:
             - file: notebooks/pyart/pyart-basics.md
             - file: notebooks/pyart/pyart-corrections.md
             - file: notebooks/pyart/pyart-gridding.md
+            - file: notebooks/pyart/pyart-zdr-correction.md
     - title: Radar Processing Workflow
       children:
         - file: notebooks/workflow/workflow_overview.md
         - title: Pre Course
           children:
-            - file: notebooks/workflow/inspect_source_data_fgora.md
-            - file: notebooks/workflow/inspect_source_data_jastrebac.md
+            - title: Data Exploration
+              children:
+                - file: notebooks/workflow/inspect_source_data_fgora.md
+                - file: notebooks/workflow/inspect_source_data_jastrebac.md
             - file: notebooks/workflow/dem_beamblockage.md
-            - file: notebooks/workflow/gridding_data.md
-            - file: notebooks/workflow/composite_togrid.md
+            - title: Phase Processing
+              children:
+                - file: notebooks/workflow/system_phidp.md
+                - file: notebooks/workflow/delta_phidp.md
+                - file: notebooks/workflow/phidp.md
+            - title: Attenuation Correction
+              children:
+                - file: notebooks/workflow/attenuation_single_pol.md
+                - file: notebooks/workflow/attenuation_dual_pol.md
+            - title: Gridding & Compositing
+              children:
+                - file: notebooks/workflow/gridding_data.md
+                - file: notebooks/workflow/composite_togrid.md
         - title: Main Course
           children:
             - file: notebooks/workflow/stratiform_case_2014.md
@@ -92,11 +108,16 @@ project:
         - title: Post Course
           children:
             - file: notebooks/workflow/post_course.md
+  jupyter:
+    binder:
+      repo: ProjectPythia/erad2026
+      url: https://binder.projectpythia.org/
 site:
   options:
     logo: images/logos/openradar_logo.svg
     folders: true
-    url: https://github.com/openradar/erad2026
+    folders_level: 10
+    url: https://openradarscience.org/erad2026
   nav:
     - title: Conference Home
       url: https://www.erad2026.rs
@@ -104,3 +125,6 @@ site:
       url: https://openradarscience.org
     - title: Discourse
       url: https://openradar.discourse.group/
+  actions:
+    - title: Launch Environment
+      url: https://binder.projectpythia.org/v2/gh/ProjectPythia/erad2026/main?labpath=notebooks
