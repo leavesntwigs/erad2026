@@ -79,4 +79,5 @@ dependencies:
   # needed for LROSE / pyrad
   - metpy
   - pip
+  - plotly
 
