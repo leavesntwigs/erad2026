@@ -77,6 +77,9 @@
     <loc>http://localhost:3000/notebooks/workflow/inspect-source-data-jastrebac</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/notebooks/workflow/qvp-workflow</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/notebooks/workflow/dem-beamblockage</loc>
   </url>
   <url>
@@ -95,10 +98,19 @@
     <loc>http://localhost:3000/notebooks/workflow/attenuation-dual-pol</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/notebooks/workflow/qpe-estimation</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/notebooks/workflow/gridding-data</loc>
   </url>
   <url>
     <loc>http://localhost:3000/notebooks/workflow/composite-togrid</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/notebooks/workflow/composite-qpe</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/notebooks/gpm-api/sr-gr-calibration</loc>
   </url>
   <url>
     <loc>http://localhost:3000/notebooks/workflow/stratiform-case-2014</loc>
