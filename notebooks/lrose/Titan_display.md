@@ -934,10 +934,10 @@ fig = plot_with_timefile_slider(z_step, path, df_polys, df)
 
 
 ```{code-cell} ipython3
-fig.show(renderer="iframe")
+#fig.show(renderer="iframe")
 ```
 
 
 ```{code-cell} ipython3
-
+fig
 ```
