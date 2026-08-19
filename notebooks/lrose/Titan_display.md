@@ -19,7 +19,7 @@ import plotly
 ```{code-cell} ipython3
 # read cartesian radar data
 
-path = "./data/cart/20170812"
+path = "./data/radar/cart/20170812"
 
 file = "./data/titan/ascii/Tracks2Ascii20170812.txt"
 
