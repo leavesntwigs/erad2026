@@ -120,6 +120,7 @@ project:
           children:
             - file: notebooks/lrose/Titan_preprocessing.md
             - file: notebooks/lrose/Titan_tutorial.md
+            - file: notebooks/lrose/Titan_display.md
         - title: Reflectivity calibration with GPM
           children:
             - file: notebooks/gpm-api/SR_GR_Calibration.md
