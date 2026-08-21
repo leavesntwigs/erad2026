@@ -29,6 +29,7 @@ Please make sure to be there well before 9 o'clock to find your way and have eno
 
 - Xradar (IO layer)
 - PyArt
+- wradlib
 - LRose
 - Baltrad
 
@@ -79,8 +80,7 @@ Show how individual packages integrate into a complete workflow.
 - Storm tracking and analysis workflows
 - Radar-to-dynamics applications
 
-#### c. Echo Top Height Analysis (Bobby?)
-- Identification of storm structure
-- Vertical extent diagnostics
-- Derived product generation
-
+#### c. Reflectivity Calibration with Spaceborne Radar
+- GPM-API Introduction
+- Ground-Spaceborne Radar Volume Matching
+- Ground Radar Reflectivity Calibration
