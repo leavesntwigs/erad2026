@@ -10,28 +10,28 @@ kernelspec:
   display_name: Python 3
 ---
 
-# **Titan Tutorial**
+# **TITAN Tutorial**
 
 ---
 
 <img align="right" width="300" height="300" src="./images/hail_case_tracks.png">
 
-This interactive tutorial takes you through the steps of how to run the Thunderstorm Identification, Tracking, Analysis and Nowcasting (Titan) application and analyze the output. Titan was originally designed as an algorithm to objectively identify and track thunderstorms from weather radar data for a weather modification experiment in South Africa in the 1980s. Now, Titan includes forecasting, storm analysis, and climatological analysis. Titan now refers to the larger system in which the original application is one component.
+This interactive tutorial takes you through the steps of how to run the Thunderstorm Identification, Tracking, Analysis and Nowcasting (TITAN) application and analyze the output. TITAN was originally designed as an algorithm to objectively identify and track thunderstorms from weather radar data for a weather modification experiment in South Africa in the 1980s. Now, TITAN includes forecasting, storm analysis, and climatological analysis. TITAN now refers to the larger system in which the original application is one component.
 
-Titan is described in more detail in [Dixon and Wiener (1993)](https://doi.org/10.1175/1520-0426(1993)010%3C0785:TTITAA%3E2.0.CO;2).
+TITAN is described in more detail in [Dixon and Wiener (1993)](https://doi.org/10.1175/1520-0426(1993)010%3C0785:TTITAA%3E2.0.CO;2), and in the [NSF NCAR TITAN GitHub Repo](https://github.com/ncar/lrose-titan).
 
 
 ---
 
-## **Titan Background**
+## **TITAN Background**
 
-Titan identifies storm objects as a contiguous region of echo that exceeds a user-defined reflectivity threshold and minimum volume. Dual thresholds are used to deal with storm objects that briefly touch, but do not merge. Storm tracking is performed by looking for regions of overlap between storm objects at successive time intervals. Short term storm extrapolation forecasts are used to identify instances of storm merging and splitting. Titan output includes storm tracks, polygons outlining the storm objects, and storm property information (e.g., volume, area, mass, precipitation flux).
+TITAN identifies storm objects as a contiguous region of echo that exceeds a user-defined reflectivity threshold and minimum volume. Dual thresholds are used to deal with storm objects that briefly touch, but do not merge. Storm tracking is performed by looking for regions of overlap between storm objects at successive time intervals. Short term storm extrapolation forecasts are used to identify instances of storm merging and splitting. TITAN output includes storm tracks, polygons outlining the storm objects, and storm property information (e.g., volume, area, mass, precipitation flux).
 
-The high-level workflow for Titan is shown in the graphic below. Key steps include quality controlling the data to remove any non-meteorological or compromised echoes and gridding the data to a Cartesian grid. Once Titan is run and the tracks are produced, those data need to be converted into more user-friendly file types. 
+The high-level workflow for TITAN is shown in the graphic below. Key steps include quality controlling the data to remove any non-meteorological or compromised echoes and gridding the data to a Cartesian grid. Once TITAN is run and the tracks are produced, those data need to be converted into more user-friendly file types. 
 
 <img align="center" width="600" src="./images/titan_highlevel.png">
 
-A more detailed workflow for Titan that includes each step, application, and data type is shown in the graphic below.
+A more detailed workflow for TITAN that includes each step, application, and data type is shown in the graphic below.
 
 <img align="center" width="800" src="./images/titan_data_flow.png">
 
@@ -43,7 +43,7 @@ A more detailed workflow for Titan that includes each step, application, and dat
 Files required to run this notebook:
 * Quality controlled radar data between 1600-1700 UTC.
 
-Jastrebac is a 10 cm (S-band) Gematronik dual polarization radar. This hourlong period contains areas of convection.
+Jastrebac is a 10 cm (S-band) Gematronik dual polarization radar in Serbia, supervised by the Republic Hydrometeorological Service of Serbia (RHMZ). This hourlong period contains areas of convection in the region.
 
 The QC'd data is hosted on the [NSF Open Storage Network (OSN)](https://www.openstoragenetwork.org/) (see [](#intro-data-access) for the general access pattern):
 
@@ -56,25 +56,9 @@ The QC'd data is hosted on the [NSF Open Storage Network (OSN)](https://www.open
 After the full analysis is run, the following data files should exist:
 
 ```
-  ./data/titan/storms/20170812.th5 (Titan binary files)
-  ./data/titan/ascii/Tracks2Ascii20170812.txt (Titan output converted by Tracks2Ascii)
+  ./data/titan/storms/20170812.th5 (TITAN binary files)
+  ./data/titan/ascii/Tracks2Ascii20170812.txt (TITAN output converted by Tracks2Ascii)
 ```
-
-### 3. Note on task cells
-
-This notebook uses two colored cells to indicate tasks.
-
-<div class="alert alert-block alert-info"> <b>File Task: modify parameters in text files.</b> 
-
-These text blocks provide instructions for modifying the parameter files or other functions in *external* text files. These files can be opened through the JupyterHub interface as text files or with your favorite Unix editor (e.g., vi, vim) on a terminal.
-
-</div>
-
-<div class="alert alert-block alert-warning"> <b>Cell Task: run a command in Jupyter notebook cell.</b> 
-
-These text blocks instruct the users to run a command *in* a cell within the Jupyter notebook. If you prefer, you can copy the commands (minus the ! symbol, which is specific to JupyterHub) into a terminal window.
-
-</div>
 
 ---
 
@@ -106,10 +90,10 @@ prefix = "lrose/cfrad/20170812"
 We need to set up the required data directories. The raw radar data will be grabbed from the S3 bucket. We delete any existing files and directories specific to this tutorial to ensure we're starting with clean directories and files.
 
 ```{code-cell} ipython3
-# make overall titan directory and application output directory
+# make overall TITAN directory and application output directory
 !mkdir -p ./data/titan
 
-# make directory for output ascii files from Titan
+# make directory for output ascii files from TITAN
 !mkdir -p ./data/titan/ascii
 
 # make directory for the raw CfRadial data pulled from OSN
@@ -127,11 +111,9 @@ os.environ["LROSE_DIR"] = "/usr/local/lrose/bin"
 
 ### 1.3 Get data and convert to MDV format
 
-We will use the data that was quality controlled in the earlier part of the data during the ERAD workshop.
+We will use the data that was quality controlled in the earlier part of the day during the ERAD workshop.
 
-Titan requires a specialty format called MDV, which is a form of NetCDF. To determine which application you need, identify whether your quality controlled data are in polar coordinates or have already been gridded to Cartesian files.
-
-If your quality controlled data are in *polar coordinates*, use Radx2Grid to regrid the data to MDV.
+TITAN requires a specialty format called MDV, which is a form of NetCDF. Since the quality controlled data are in polar coordinates, we use Radx2Grid to regrid the data to MDV. A parameter file has been provided.
 
 <code lang="bash">!$LROSE_DIR/Radx2Grid -params ./params/Radx2Grid.params</code>
 
@@ -152,44 +134,36 @@ for remote in remote_files:
 ```
 
 ```{code-cell} ipython3
-# space for commands to find data, if needed
+# Grid the polar data onto a Cartesian grid
 !$LROSE_DIR/Radx2Grid -params ./params/Radx2Grid.params
 ```
 
-## **2. Run Titan storm tracking**
+## **2. Run TITAN storm tracking**
 
-To start, we have provided all necessary parameters for you, so you can get a sense for the steps needed to run Titan. We have provided basic parameters including variable names, directories, etc. Once you've completed the first run, you can modify a few parameters and see how the analysis changes (see Section 5).
+To start, we have provided all necessary parameters for you, so you can get a sense for the steps needed to run TITAN. We have provided basic parameters including variable names, directories, etc. Once you've completed the first run, you can modify a few parameters and see how the analysis changes (see Section 5).
 
-Run the Titan algorithm to identify and track storms.
+Run the TITAN algorithm to identify and track storms.
 
 Titan runs on the Cartesian gridded data, using the DBZ field and optionally the VEL field to compute storm rotation.
 
-<div class="alert alert-block alert-warning"> <b>Cell Task: Run Titan on derecho case data.</b> 
-    <br>
-    <br>
-    Run the derecho case Titan script:
-    <br>
-    <br>
-    <code lang="bash">!$LROSE_DIR/Titan -params ./params/Titan.params -start "2017 08 12 16 00 00" -end "2017 08 12 17 00 00" -debug</code>
-</div>
+NOTE: *TITAN requires a sounding to convert reflectivity data into meaningful storm metrics for the analysis. The sounding can be ingested in SPDB format or entered manually. In our case, we manually entered 10 levels retrieved from an ERA5 sounding corresponding to the radar's location and the date and time of this case. You can verify this by inspecting the parameter files and searching for "sounding_mode = SPECIFY_SOUNDING;", along with the manually entered array in that section.*
+
+**Task #1: Run Titan on the Jastrebac data.**
+
+<code lang="bash">!$LROSE_DIR/Titan -params ./params/Titan.params -start "2017 08 12 16 00 00" -end "2017 08 12 17 00 00" -debug</code>
 
 ```{code-cell} ipython3
 # run Titan
 !$LROSE_DIR/Titan -params ./params/Titan.params -start "2017 08 12 16 00 00" -end "2017 08 12 17 00 00" -debug
 ```
 
-## **3. Convert Titan binary output to readable format**
+## **3. Convert TITAN binary output to readable format**
 
-The Titan output is in a binary format. In order to read the data, we first convert the Titan output to an ASCII file.
+The TITAN output is in a binary format. In order to read the data, we first convert the TITAN output to an ASCII file.
 
-<div class="alert alert-block alert-warning"> <b>Cell Task: Convert derecho case Titan output to ASCII.</b> 
-    <br>
-    <br>
-    Run the derecho case ASCII conversion script:
-    <br>
-    <br>
-    <code lang="bash">!$LROSE_DIR/Tracks2Ascii -params ./params/Tracks2Ascii.params -f ./data/titan/storms/20170812.th5 > ./data/titan/ascii/Tracks2Ascii20170812.txt -debug</code>
-</div>
+**Task #2: Convert Titan binary output to ASCII.**
+
+<code lang="bash">!$LROSE_DIR/Tracks2Ascii -params ./params/Tracks2Ascii.params -f ./data/titan/storms/20170812.th5 > ./data/titan/ascii/Tracks2Ascii20170812.txt -debug</code>
 
 ```{code-cell} ipython3
 !$LROSE_DIR/Tracks2Ascii -params ./params/Tracks2Ascii.params -f ./data/titan/storms/20170812.th5 > ./data/titan/ascii/Tracks2Ascii20170812.txt -debug
@@ -197,7 +171,7 @@ The Titan output is in a binary format. In order to read the data, we first conv
 
 ## **4. Investigate Output**
 
-We'll load the necessary Python packages and plot some of the Titan output now.
+We'll load the necessary Python packages and plot some of the TITAN output now.
 
 ```{code-cell} ipython3
 # Import Python packages
@@ -214,6 +188,7 @@ import netCDF4 as nc
 ```
 
 ```{code-cell} ipython3
+# set the path for the ASCII file
 file = "./data/titan/ascii/Tracks2Ascii20170812.txt"
 ```
 
@@ -244,7 +219,7 @@ data_lines = [line.strip() for line in lines if not line.startswith("#")]
 
 The file last three rows are labeled "parents", "children", "nPolySidesPolygonRays*72". 
 
-Parents and children columns refer to identifiers based on merging and splitting processes. The Polygon column shows the values for the lines from the polygon centroid to each vertex, in km. There are 72 values because each line is separated 5 deg (72*5 =360). 
+Parents and children columns refer to identifiers based on storm merging and splitting processes. The Polygon column shows the values for the lines from the polygon centroid to each vertex, in km. There are 72 values because each line is separated 5 deg (72*5 =360). 
 
 With that information and the "envelope_centroid" column, we can retrieve the cells envelopes at each timestep.
 
@@ -296,19 +271,19 @@ df['date_utc'] = pd.to_datetime(
 print(df)
 ```
 
-Let's explore the Titan output now!
+Let's explore the TITAN output now!
 
 ### 4.2 Examine the number of identified individual storms per complex
 
-#### How does Titan work?
+#### How does TITAN work?
 
-Titan identifies individual radar cells  within every radar volume, based on reflectivity and volume thresholds. Then, it tracks them through time using a combination and optimization scheme, and geometric logic to address splitting and merging storms. In this example, we have set the minimum reflectivity threshold to 35 dBZ. This is shown in column 'dBZThreshold'. That threshold defines the minimum reflectivity for our 'cell' entity.
+TITAN identifies individual radar cells within each radar volume based on reflectivity and volume thresholds. It then tracks these cells over time using a combination and optimization scheme, along with geometric logic to handle storm splitting and merging. In this example, we set the minimum reflectivity threshold to 35 dBZ, shown in the 'dBZThreshold' column. This threshold defines the minimum reflectivity value for an entity to be classified as a 'cell'.
 
-#### What is the Titan output?
+#### What is the TITAN output?
 
-Titan outputs cell fetures at each tracking timestep, and identifies cells within major systems, based on their interaction with neighboring cells. Therefore, each cell will have a simple and a complex identifier (“SimpleNum” and “ComplexNum”) in the Titan output text file. For example, if we are tracking a multicell system, all the individual cells tracked within the major system will have different "SimpleNum" identifiers, however, they will al have the same "ComplexNum" identifier (the main multicell system).
+TITAN outputs cell features at each tracking timestep and identifies individual cells within larger systems based on their interaction with neighboring cells. As a result, each cell in the TITAN output ASCII file is assigned two identifiers: a "SimpleNum" and a "ComplexNum". For example, when tracking a multicell system, each individual cell within it will have a distinct "SimpleNum," but all cells belonging to that same system will share a common "ComplexNum."
 
-Let's inspect our case now! How many Complexes we can identify? Which one contains more tracks (e.g., single cell tracks, and split/merge processes)?
+Let's inspect our case now! How many Complexes can we identify? Which one contains more tracks (e.g., single cell tracks, and split/merge processes)?
 
 ```{code-cell} ipython3
 # Count number of unique SimpleNum per ComplexNum
@@ -333,19 +308,19 @@ plt.show()
 
 ### 4.3 Explore a single complex
 
-Let's now explore more about one of the Complex tracks. In this case, it makes sense to choose **ComplexNum = 17**, which contains more than 25 tracked individual storms.
+Let's now explore one of the Complex tracks. In this case, it makes sense to choose **ComplexNum = 17**, which contains more than 25 tracked individual storms.
 
 In our case, we will plot the Maximum Reflectivity (```'MaxDBZ(dBZ)'```) for the entire life cycle of this complex system. Each individual storm is plotted in a different color (see the ```hue='SimpleNum'``` parameter in the plot).
 
-You can play and choose another attribute (e.g., Echo Top, Vil) from the table resulting from Tracks2Ascii, and see how the attributes vary.
+You can play and choose another attribute (e.g., Echo Top, Vil) from the ASCII file, and see how the attributes vary.
 
 ```{code-cell} ipython3
-# feel free to modify this variable to see what other complex tracks look like
+# feel free to modify this variable based on the plot above to see what other complex tracks look like
 complexnum = "17"
 ```
 
 ```{code-cell} ipython3
-#  Filter dataframe for ComplexNum == 0 and sort by time
+#  Filter dataframe for the chosen ComplexNum and sort by time
 df0 = df[df['ComplexNum'] == complexnum].copy()
 df0 = df0.sort_values('date_utc')
 df0['MaxDBZ(dBZ)'] = pd.to_numeric(df0['MaxDBZ(dBZ)'], errors='coerce')
@@ -439,7 +414,6 @@ TIME_IDX = 0
 FILEPATH = "./data/radar/cart/20170812/ncf_20170812_161332.nc"   # <-- set your file path here
 FIELD_NAME = "DBZ"            
 
-# --- Open, extract everything needed, then close automatically ---
 with nc.Dataset(FILEPATH, "r") as ds:
     x = ds.variables["lon0"][:]
     y = ds.variables["lat0"][:]
@@ -452,10 +426,9 @@ with nc.Dataset(FILEPATH, "r") as ds:
         data_3d = np.ma.masked_equal(data_3d, fill_value)
     data_3d = np.ma.masked_invalid(data_3d)
 
-    # --- Max reflectivity in column: max across the z-axis ---
+    # Retrieve Max reflectivity in column ( max across the z-axis )
     data = data_3d.max(axis=0)  # shape (y0, x0)
 
-    # Grab attributes now, while var/ds are still valid
     vmin = getattr(var, "min_value", -10.0)
     vmax = getattr(var, "max_value", 70.0)
     units = getattr(var, "units", FIELD_NAME)
@@ -465,7 +438,7 @@ with nc.Dataset(FILEPATH, "r") as ds:
                          calendar=getattr(time_var, "calendar", "standard"))
     plot_time = pd.Timestamp(raw_time.isoformat())
 
-# --- ds is now closed. Everything below uses only the extracted variables ---
+
 
 # Handle tz-naive/aware consistently
 if plot_time.tz is None:
@@ -477,12 +450,12 @@ plot_time_min = plot_time.floor("min")
 print("Plotting field for time:", plot_time_min)
 print(f"Max reflectivity in column — min/max over field: {data.min():.2f} / {data.max():.2f}")
 
-# --- Prep dataframe: correct dtypes ---
+# Correct dtypes for Dataframe
 df['date_utc'] = pd.to_datetime(df['date_utc'], utc=True)
 df['EnvelopeCentroidLon(deg)'] = pd.to_numeric(df['EnvelopeCentroidLon(deg)'], errors='coerce')
 df['EnvelopeCentroidLat(deg)'] = pd.to_numeric(df['EnvelopeCentroidLat(deg)'], errors='coerce')
 
-# --- Filter dataframe: match to the minute, within radar domain ---
+# Filter dataframe: match to the minute, within radar domain 
 lon_min, lon_max = float(x.min()), float(x.max())
 lat_min, lat_max = float(y.min()), float(y.max())
 
@@ -494,13 +467,7 @@ df_match = df[
     (df['EnvelopeCentroidLat(deg)'] <= lat_max)
 ]
 
-print(f"Found {len(df_match)} polygon(s) matching {plot_time_min} within radar domain "
-      f"[{lon_min:.2f}, {lon_max:.2f}] lon, [{lat_min:.2f}, {lat_max:.2f}] lat")
-
-if len(df_match) == 0:
-    print("WARNING: no polygons match this timestep/domain — check time formats/timezones/extent.")
-
-# --- Build the combined figure ---
+# plot
 fig, ax = plt.subplots(figsize=(12, 12), subplot_kw={'projection': ccrs.PlateCarree()})
 
 ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
@@ -522,7 +489,7 @@ gl.right_labels = False
 gl.xlabel_style = {'size': 14}
 gl.ylabel_style = {'size': 14}
 
-# --- Overlay only the matching polygons ---
+#  Overlay only the matching polygons 
 palette = sns.color_palette("gist_ncar", n_colors=max(len(df_match), 1))
 
 for i, (idx, row) in enumerate(df_match.iterrows()):
@@ -544,7 +511,7 @@ for i, (idx, row) in enumerate(df_match.iterrows()):
 
     poly = Polygon(polygon_points)
     ax.add_geometries([poly], crs=ccrs.PlateCarree(),
-                       edgecolor=palette[i], facecolor='none', linewidth=1.5,
+                       edgecolor='black', facecolor='none', linewidth=1.5,
                        zorder=4)
 
     ax.plot(lon_centroid, lat_centroid, marker='o', color='black', markersize=3,
@@ -556,64 +523,61 @@ plt.show()
 ```
     
 
-
+As you can see, some reflectivity regions have not been identified with polygons, while some polygons may be too large for the regions they represent. TITAN can track storms based on a variety of parameters, and users can tune these parameters to tailor which systems and storms are identified. You can explore that in the following section.
 
 
 ## **5. Explore how the storm track analysis is impacted by key parameters**
 
-Now that you've successfully run Titan, we invite you to explore how parameter selection affects the final analysis. Here, we'll focus on three parameters.
+Now that you've successfully run TITAN, we invite you to explore how parameter selection affects the final analysis. Here, we'll focus on three groups of parameters.
 
-We strongly recommend creating new parameter files and output directories so that you retain all examples from today.
+### 5.1 Reflectivity threshold
 
-To create a new parameter file with existing parameters, run a variation of the following command, updating the output file name at the end.
+A key parameter for TITAN is the minimum reflectivity value considered for storm identification: **_low_dbz_threshold_**. Storms are defined as regions with reflectivity values in excess of this value.
 
-<code lang="bash">!$LROSE_DIR/Titan -params ./params/Titan.params -print_params > ./params/Titan.params.new</code>
+The default value for low_dbz_threshold in TITAN is 35 dBZ, but this may need to change based on the air mass, storm type, etc. 
 
-### 2.1 Reflectivity threshold
-
-A key parameter for Titan is the minimum reflectivity value considered for storm identification: low_dbz_threshold. Storms are defined as regions with reflectivity values in excess of this value.
-
-The default value in Titan is 35 dBZ, but this may need to change based on the air mass, storm type, etc. 
-
-Values to consider testing: 
+Values to consider testing for low_dbz_threshold: 
 * 30 dBZ
 * 40 dBZ
 * 45 dBZ
 
-A reminder to update the output directory for the Titan binary files and the ASCII files, as shown in an example below (note the three instances of the "_30" suffix, but feel free to rename as you prefer).
-
-<code lang="bash">!$LROSE_DIR/Titan -params ./params/Titan.params.new -odir ./data/titan/storms_30 -start "2017 08 12 16 00 00" -end "2017 08 12 17 00 00" -debug</code>
-
-<code lang="bash">!$LROSE_DIR/Tracks2Ascii -params ./params/Tracks2Ascii.params -f ./data/titan/storms_30/20170812.th5 > ./data/titan/ascii_30/Tracks2Ascii20170812.txt -debug</code>
-
-When you copy the plotting code from above, you'll need to update the file paths. Based on the complex numbers, you'll also need to pick a different complexnum.
-
-```{code-cell} ipython3
-# file = "./data/titan/ascii_30/Tracks2Ascii20170812.txt"
-# complexnum = "17" # change to the appropriate number
-```
-
-### 2.2 Extension
-
-### 2.3 Tracking variable
+### 5.2 Tracking variable
 
 Titan offers two options for the storm tracking variable: 1) the 3-D reflectivity field (default) and 2) the column maximum reflectivity. This option is set in the variable use_column_max_dbz, where FALSE (default) tracks the 3-D reflectivity field and TRUE tracks the column maximum reflectivity.
 
-Note, if use_column_max_dbz = TRUE, then the user must set the height range over which the maximum reflectivity is calulated using the following parameters: column_min_ht_km and column_max_ht_km.
+Note, if use_column_max_dbz = TRUE, then the user must set the height range over which the maximum reflectivity is calculated using the following parameters: column_min_ht_km, and column_max_ht_km.
 
 Consider testing: 
 * use_column_max_dbz = TRUE
 
-A reminder to update the output directory for the Titan binary files and the ASCII files, as shown in an example below (note the three instances of the "_column" suffix, but feel free to rename as you prefer).
+### 5.3 Storm size parameters
 
-<code lang="bash">!$LROSE_DIR/Titan -params ./params/Titan.params.new -odir ./data/titan/storms_column -start "2017 08 12 16 00 00" -end "2017 08 12 17 00 00" -debug</code>
+Users have control over the storm sizes that TITAN tracks. You can test and change the limits to the storm base and top height (km), as well as the storm size. In terms of storm size, if the data are 2D (depending on the tracking variable), the units are km^2; if the data are 3D, the units are km^3.
 
-<code lang="bash">!$LROSE_DIR/Tracks2Ascii -params ./params/Tracks2Ascii.params -f ./data/titan/storms_column/20170812.th5 > ./data/titan/ascii_column/Tracks2Ascii20170812.txt -debug</code>
+Consider testing with other values:
+* min_storm_size
+* maz_storm_size
+* base_threshold
+* top_threshold
 
-When you copy the plotting code from above, you'll need to update the file paths. Based on the complex numbers, you'll also need to pick a different complexnum.
+### 5.4 Setting up alternate parameter files and directories
+
+We strongly recommend creating new parameter files and output directories so that you retain all examples from today. 
+
+To create a new parameter file with existing parameters, run a variation of the following command, updating the output file name at the end. The parameter file can be opened through the JupyterHub interface as text files or with your favorite Unix editor (e.g., vi, vim) on a terminal.
+
+<code lang="bash">!$LROSE_DIR/Titan -params ./params/Titan.params -print_params > ./params/Titan.params.new</code>
+
+To update the output directories, you can take advantage of the -odir flag for TITAN and redirect the output of Tracks2Ascii. To update the location of the TITAN binary files for Tracks2Ascii, just update the path after the -f flag. Note the three instances of the "_new" suffix below, but feel free to rename as you prefer.
+
+<code lang="bash">!$LROSE_DIR/Titan -params ./params/Titan.params.new -odir ./data/titan/storms_new -start "2017 08 12 16 00 00" -end "2017 08 12 17 00 00" -debug</code>
+
+<code lang="bash">!$LROSE_DIR/Tracks2Ascii -params ./params/Tracks2Ascii.params -f ./data/titan/storms_new/20170812.th5 > ./data/titan/ascii_new/Tracks2Ascii20170812.txt -debug</code>
+
+When you copy the plotting code from above, you'll need to update the ASCII file path. Based on the number of storms associated with each complex, you may need to pick a different complexnum.
 
 ```{code-cell} ipython3
-# file = "./data/titan/ascii_suffix/Tracks2Ascii20170812.txt"
+# file = "./data/titan/ascii_new/Tracks2Ascii20170812.txt"
 # complexnum = "17" # change to the appropriate number
 ```
 

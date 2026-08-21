@@ -67,6 +67,7 @@ jobs:
           ERAD2026_PREFIX=Fgora ERAD2026_SWEEP=sweep_0 jupytext --to notebook --execute notebooks/workflow/gridding_data.md
           ERAD2026_PREFIX=jastrebac_250m ERAD2026_SWEEP=sweep_0 jupytext --to notebook --execute notebooks/workflow/gridding_data.md
           ERAD2026_PREFIX=jastrebac_500m ERAD2026_SWEEP=sweep_0 jupytext --to notebook --execute notebooks/workflow/gridding_data.md
+          jupytext --to notebook --execute notebooks/lrose/Titan_tutorial.md
           myst build --execute --ci --html --execute-parallel 1
 
       - name: Zip the book

@@ -19,6 +19,9 @@ project:
     - name: Gionata Ghiggi
       orcid: 0000-0002-0818-0865
       github: ghiggi
+    - name: Hamid Ali Syed
+      orcid: https://orcid.org/0000-0002-7188-2544
+      github: syedhamidali
     - name: Jen DeHart
       orcid: 0000-0001-8536-4927
       github: jcdehart
@@ -120,6 +123,7 @@ project:
           children:
             - file: notebooks/lrose/Titan_preprocessing.md
             - file: notebooks/lrose/Titan_tutorial.md
+            - file: notebooks/lrose/Titan_display.md
         - title: Reflectivity calibration with GPM
           children:
             - file: notebooks/gpm-api/SR_GR_Calibration.md
